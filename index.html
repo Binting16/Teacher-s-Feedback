@@ -345,29 +345,26 @@ const WORK = {
   subject: "Architectural Design 03",
   date: "November 9, 2026",
 
-  // Each section becomes a block on the page.
-  // Use a blank line inside body to start a new paragraph.
-  // image and caption are optional: put the file in the same repo, e.g. "images/plan.png".
+  // Each { ... } below is one block on the page. This work has just one.
+  //
+  // TIP FOR WRITING TEXT: wrap long text in backticks ` ` (the key left of the 1 key),
+  // NOT in " " or ' '. Backticks let you use apostrophes, quotation marks and line breaks
+  // freely. A blank line inside the backticks starts a new paragraph on the page.
+  //
+  // Also remember: every line inside { } ends with a comma (heading, body, image...).
   sections: [
     {
-      heading: "What I was asked to do",
-      body: `To redesign a barangay complex. Specifically just the barangay hall for now.`
-    },
-    {
-      heading: "How I did it",
-      body: "With this revision from the previous design we worked on as a group, I have made a lot of changes that could potentially make the other sheets connected to this floor plan/elevation very disconnected or not aligned. Well previously, I did make my original floor plans until both the girls in my group disregarded what I made and went to do the perspective first and I will explain that in the end. For now is to explain the changes.
-        
-        ",
+      heading: "Explanation",
+      body: `With this revision from the previous design we worked on as a group, I have made a lot of changes that could potentially make the other sheets connected to this floor plan/elevation very disconnected or not aligned. Well previously, I did make my original floor plans until both the girls in my group disregarded what I made and went to do the perspective first and I will explain that in the end. For now is to explain the changes.
+
+The SK Office now is now in the floor plan which Marcelo just did. I added the Health Care Office in the Barangay hall to isolate it from the Day Care area. I added a treatment room, more CR especially separated by gender and also PWD CR. I relocated the Senior Citizen office and still in the ground floor for easier accessibility for the seniors that would visit the Barangay hall for concerns. The made the medicine area enclosed inside the building so that it could stay cool since medicines are a bit sensitive to temperature.
+
+I completely ditched some of the space programming we did and to appropriately place some of the rooms like the Senior Citizen office getting smaller since the ground floor is really limited. The Tanod outpost is open to the left side of the building. Ramps around the building for easier access of PWDs. Wide doors and a lot of windows around.`,
+
+      // Optional: to show a picture, put the file in the same GitHub repo and write its name,
+      // for example image: "images/floor-plan.png". Leave "" for no picture.
       image: "",
       caption: ""
-    },
-    {
-      heading: "What I got",
-      body: "Describe your result or final output."
-    },
-    {
-      heading: "What I’m unsure about",
-      body: "Tell your teacher which parts you want checked most."
     }
   ]
 };
@@ -392,6 +389,8 @@ function renderWork() {
   const box = $("explanation");
   const select = $("section");
   select.appendChild(new Option("Whole work", "Whole work"));
+  // With only one section, "About which part?" is pointless, so hide it.
+  if (WORK.sections.length < 2) select.closest(".field").hidden = true;
 
   WORK.sections.forEach((s) => {
     const block = document.createElement("section");
