@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>My work</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600&family=Barlow+Condensed:wght@500;600;700&family=Caveat:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --vellum: #E8ECED;
+    --grid: #DAE1E4;
+    --sheet: #F9FBFB;
+    --ink: #1D2833;
+    --ink-soft: #4F5D69;
+    --line: #C5CFD4;
+    --blue: #2A5D87;
+    --red: #B8232B;
+    --red-wash: #FBEFEF;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --vellum: #141B21;
+      --grid: #1C252C;
+      --sheet: #1B242B;
+      --ink: #E6ECEF;
+      --ink-soft: #A3B1BB;
+      --line: #33414B;
+      --blue: #7DB4E0;
+      --red: #FF8A8F;
+      --red-wash: #2A1A1C;
+    }
+  }
+
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    font-family: "Barlow", system-ui, -apple-system, "Segoe UI", sans-serif;
+    font-size: 1.0625rem;
+    line-height: 1.6;
+    color: var(--ink);
+    background-color: var(--vellum);
+    background-image:
+      linear-gradient(var(--grid) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+    background-size: 28px 28px;
+  }
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 24px 20px 72px; }
+
+  /* Title block */
+  .titleblock {
+    display: grid;
+    grid-template-columns: minmax(0, 2fr) minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-areas:
+      "title student subject"
+      "title teacher date";
+    gap: 1px;
+    background: var(--ink);
+    border: 2px solid var(--ink);
+  }
+  .tb-cell { background: var(--sheet); padding: 12px 16px; }
+  .tb-title { grid-area: title; padding: 22px 26px 26px; }
+  .tb-student { grid-area: student; }
+  .tb-subject { grid-area: subject; }
+  .tb-teacher { grid-area: teacher; }
+  .tb-date { grid-area: date; }
+  .tb-label { display: block; font-size: 0.82rem; color: var(--ink-soft); line-height: 1.2; }
+  .tb-value { display: block; font-weight: 600; font-size: 1.1rem; overflow-wrap: anywhere; }
+  .tb-title h1 {
+    margin: 0 0 10px;
+    font-family: "Barlow Condensed", "Arial Narrow", sans-serif;
+    font-weight: 700;
+    font-size: clamp(2.3rem, 5.2vw, 3.7rem);
+    line-height: 1.02;
+  }
+  .tb-title p { margin: 0; max-width: 54ch; color: var(--ink-soft); font-size: 1.1rem; }
+
+  .preview-note {
+    margin: 16px 0 0;
+    padding: 10px 14px;
+    background: var(--sheet);
+    border: 1.5px dashed var(--blue);
+    font-size: 0.97rem;
+  }
+  .preview-note[hidden] { display: none; }
+
+  /* Main layout */
+  .main {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 370px;
+    gap: 24px;
+    margin-top: 24px;
+    align-items: start;
+  }
+  .sheet {
+    background: var(--sheet);
+    border: 2px solid var(--ink);
+    padding: 10px 34px 22px;
+  }
+  .block { padding: 22px 0; border-top: 1px solid var(--line); }
+  .block:first-child { border-top: 0; }
+  .block h2 {
+    margin: 0 0 8px;
+    font-family: "Barlow Condensed", "Arial Narrow", sans-serif;
+    font-weight: 600;
+    font-size: 1.75rem;
+    line-height: 1.15;
+    color: var(--blue);
+  }
+  .block p { margin: 0 0 1em; max-width: 68ch; }
+  .block p:last-child { margin-bottom: 0; }
+  .block figure { margin: 14px 0 0; max-width: 100%; }
+  .block figure img { display: block; max-width: 100%; height: auto; border: 1.5px solid var(--ink); background: #fff; }
+  .block figcaption { margin-top: 6px; font-size: 0.93rem; color: var(--ink-soft); }
+
+  /* Teacher markup form */
+  .markup {
+    position: sticky;
+    top: 16px;
+    max-height: calc(100vh - 32px);
+    overflow: auto;
+    background: var(--sheet);
+    border: 2px solid var(--red);
+    padding: 20px 22px 22px;
+  }
+  .markup h2 {
+    margin: 0 0 4px;
+    font-family: "Barlow Condensed", "Arial Narrow", sans-serif;
+    font-weight: 700;
+    font-size: 1.75rem;
+    line-height: 1.1;
+    color: var(--red);
+  }
+  .markup .lead { margin: 0 0 16px; color: var(--ink-soft); font-size: 0.98rem; line-height: 1.45; }
+  .field { margin: 0 0 14px; padding: 0; border: 0; min-width: 0; }
+  .field > label, .field > legend { display: block; padding: 0; margin: 0 0 3px; font-weight: 600; font-size: 0.98rem; }
+  .hint { display: block; margin: 0 0 5px; font-size: 0.88rem; color: var(--ink-soft); line-height: 1.35; }
+  input[type="text"], select, textarea {
+    width: 100%;
+    font: inherit;
+    font-size: 1rem;
+    color: var(--ink);
+    background: var(--vellum);
+    border: 1.5px solid var(--ink-soft);
+    border-radius: 3px;
+    padding: 9px 11px;
+  }
+  textarea { min-height: 104px; resize: vertical; line-height: 1.45; }
+  :focus-visible { outline: 3px solid var(--blue); outline-offset: 2px; }
+
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; }
+  .chips input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+  .chips label {
+    display: inline-block;
+    padding: 6px 12px;
+    border: 1.5px solid var(--ink-soft);
+    border-radius: 999px;
+    font-size: 0.95rem;
+    cursor: pointer;
+    background: var(--sheet);
+    transition: background-color 0.12s, color 0.12s, border-color 0.12s;
+  }
+  .chips input:checked + label { background: var(--red); border-color: var(--red); color: #fff; }
+  .chips input:focus-visible + label { outline: 3px solid var(--blue); outline-offset: 2px; }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .chips input:checked + label { color: #1B242B; }
+  }
+
+  .hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+
+  button.send {
+    width: 100%;
+    font-family: "Barlow Condensed", "Arial Narrow", sans-serif;
+    font-weight: 600;
+    font-size: 1.3rem;
+    letter-spacing: 0.01em;
+    padding: 10px 16px;
+    color: #fff;
+    background: var(--red);
+    border: 0;
+    border-radius: 3px;
+    cursor: pointer;
+  }
+  button.send:hover { filter: brightness(0.93); }
+  button.send:disabled { opacity: 0.6; cursor: wait; }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) button.send { color: #1B242B; }
+  }
+  #status { min-height: 1.4em; margin: 10px 0 0; font-size: 0.95rem; }
+  #status.ok { color: var(--blue); font-weight: 600; }
+  #status.err { color: var(--red); font-weight: 600; }
+
+  /* Notes */
+  .notes { margin-top: 32px; }
+  .notes > h2 {
+    margin: 0 0 14px;
+    font-family: "Barlow Condensed", "Arial Narrow", sans-serif;
+    font-weight: 700;
+    font-size: 2rem;
+    line-height: 1.1;
+  }
+  #notesMsg { margin: 0; padding: 16px 18px; background: var(--sheet); border: 1.5px dashed var(--ink-soft); }
+  #notesMsg.err { color: var(--red); border-color: var(--red); }
+  #notesMsg[hidden] { display: none; }
+  .note-list { display: grid; gap: 16px; grid-template-columns: repeat(auto-fill, minmax(min(100%, 420px), 1fr)); }
+  .note {
+    background: var(--sheet);
+    border: 1.5px solid var(--ink);
+    border-left: 6px solid var(--red);
+    padding: 14px 18px 16px;
+  }
+  .note-head { display: flex; flex-wrap: wrap; gap: 2px 14px; align-items: baseline; margin-bottom: 8px; }
+  .note-who { font-weight: 600; font-size: 1.1rem; }
+  .note-when { color: var(--ink-soft); font-size: 0.92rem; }
+  .note-meta { width: 100%; font-size: 0.95rem; color: var(--ink-soft); }
+  .note-meta strong { color: var(--red); font-weight: 600; }
+  .pen { margin-top: 8px; }
+  .pen-label { display: block; font-size: 0.85rem; font-weight: 600; color: var(--ink-soft); }
+  .pen-text {
+    margin: 0;
+    font-family: "Caveat", "Segoe Print", "Bradley Hand", cursive;
+    font-weight: 500;
+    font-size: 1.55rem;
+    line-height: 1.25;
+    color: var(--red);
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+  }
+  .pen.fix { margin-top: 12px; padding: 8px 12px; background: var(--red-wash); border-left: 3px dashed var(--red); }
+
+  /* Narrow screens */
+  @media (max-width: 920px) {
+    .main { grid-template-columns: minmax(0, 1fr); }
+    .markup { position: static; max-height: none; overflow: visible; }
+  }
+  @media (max-width: 720px) {
+    .wrap { padding: 14px 12px 56px; }
+    .titleblock {
+      grid-template-columns: 1fr 1fr;
+      grid-template-areas:
+        "title title"
+        "student subject"
+        "teacher date";
+    }
+    .tb-title { padding: 18px 16px 20px; }
+    .sheet { padding: 6px 18px 16px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="titleblock" id="titleblock">
+    <div class="tb-cell tb-title">
+      <h1 id="wTitle"></h1>
+      <p id="wSummary"></p>
+    </div>
+    <div class="tb-cell tb-student"><span class="tb-label">Student</span><span class="tb-value" id="wStudent"></span></div>
+    <div class="tb-cell tb-subject"><span class="tb-label">Subject</span><span class="tb-value" id="wSubject"></span></div>
+    <div class="tb-cell tb-teacher"><span class="tb-label">Teacher</span><span class="tb-value" id="wTeacher"></span></div>
+    <div class="tb-cell tb-date"><span class="tb-label">Date</span><span class="tb-value" id="wDate"></span></div>
+  </header>
+
+  <p class="preview-note" id="previewNote" hidden>
+    Preview mode: notes appear on this page only and are not saved. Add your Apps Script link in <code>SCRIPT_URL</code> to save them to Google Sheets.
+  </p>
+
+  <div class="main">
+    <article class="sheet" id="explanation" aria-label="Explanation of the work"></article>
+
+    <aside class="markup" aria-labelledby="markupTitle">
+      <h2 id="markupTitle">Teacher’s markup</h2>
+      <p class="lead">Read the explanation, then leave your insights and corrections here.</p>
+
+      <form id="noteForm" novalidate>
+        <div class="field">
+          <label for="teacher">Your name</label>
+          <input type="text" id="teacher" name="teacher" autocomplete="name" maxlength="80">
+        </div>
+
+        <fieldset class="field">
+          <legend>How well did this turn out?</legend>
+          <div class="chips" id="ratingChips"></div>
+        </fieldset>
+
+        <div class="field">
+          <label for="section">About which part?</label>
+          <select id="section" name="section"></select>
+        </div>
+
+        <div class="field">
+          <label for="insights">Insights</label>
+          <span class="hint" id="insightsHint">What works well, or what you noticed.</span>
+          <textarea id="insights" name="insights" maxlength="3000" aria-describedby="insightsHint"></textarea>
+        </div>
+
+        <div class="field">
+          <label for="corrections">Corrections</label>
+          <span class="hint" id="correctionsHint">What should be fixed or redone.</span>
+          <textarea id="corrections" name="corrections" maxlength="3000" aria-describedby="correctionsHint"></textarea>
+        </div>
+
+        <div class="hp" aria-hidden="true">
+          <label>Leave this empty <input type="text" name="website" tabindex="-1" autocomplete="off"></label>
+        </div>
+
+        <button type="submit" class="send" id="sendBtn">Send notes</button>
+        <p id="status" role="status" aria-live="polite"></p>
+      </form>
+    </aside>
+  </div>
+
+  <section class="notes" aria-labelledby="notesTitle">
+    <h2 id="notesTitle">Teacher’s notes</h2>
+    <p id="notesMsg"></p>
+    <div class="note-list" id="noteList"></div>
+  </section>
+
+</div>
+
+<noscript><p style="padding:20px">This page needs JavaScript to show the explanation and the feedback form.</p></noscript>
+
+<script>
+/* =====================================================================
+   EDIT THIS PART FOR EACH NEW WORK
+   ===================================================================== */
+
+// Paste your Google Apps Script web app link here (ends in /exec).
+// Leave it empty to test the page in preview mode.
+const SCRIPT_URL = "";
+
+const WORK = {
+  // Change this id for every new work. Notes are saved and shown per id.
+  id: "work-01",
+
+  title: "Title of my work",
+  summary: "One or two sentences on what this work is about.",
+  student: "Binting",
+  teacher: "Teacher’s name",
+  subject: "Subject or course",
+  date: "November 2026",
+
+  // Each section becomes a block on the page.
+  // Use a blank line inside body to start a new paragraph.
+  // image and caption are optional: put the file in the same repo, e.g. "images/plan.png".
+  sections: [
+    {
+      heading: "What I was asked to do",
+      body: `Replace this with the task or problem, in your own words.
+
+Use a blank line to start a new paragraph.`
+    },
+    {
+      heading: "How I did it",
+      body: "Explain your steps, your computations or design choices, and why you made them.",
+      image: "",
+      caption: ""
+    },
+    {
+      heading: "What I got",
+      body: "Describe your result or final output."
+    },
+    {
+      heading: "What I’m unsure about",
+      body: "Tell your teacher which parts you want checked most."
+    }
+  ]
+};
+
+/* =====================================================================
+   PAGE CODE (no need to edit below)
+   ===================================================================== */
+
+const RATINGS = ["Needs rework", "Getting there", "Good", "Very good", "Excellent"];
+const $ = (id) => document.getElementById(id);
+let notes = [];
+
+function renderWork() {
+  document.title = WORK.title;
+  $("wTitle").textContent = WORK.title;
+  $("wSummary").textContent = WORK.summary;
+  $("wStudent").textContent = WORK.student;
+  $("wSubject").textContent = WORK.subject;
+  $("wTeacher").textContent = WORK.teacher;
+  $("wDate").textContent = WORK.date;
+
+  const box = $("explanation");
+  const select = $("section");
+  select.appendChild(new Option("Whole work", "Whole work"));
+
+  WORK.sections.forEach((s) => {
+    const block = document.createElement("section");
+    block.className = "block";
+
+    const h = document.createElement("h2");
+    h.textContent = s.heading;
+    block.appendChild(h);
+
+    String(s.body || "").split(/\n\s*\n/).forEach((para) => {
+      const text = para.trim();
+      if (!text) return;
+      const p = document.createElement("p");
+      p.textContent = text;
+      block.appendChild(p);
+    });
+
+    if (s.image) {
+      const fig = document.createElement("figure");
+      const img = document.createElement("img");
+      img.src = s.image;
+      img.alt = s.caption || s.heading;
+      fig.appendChild(img);
+      if (s.caption) {
+        const cap = document.createElement("figcaption");
+        cap.textContent = s.caption;
+        fig.appendChild(cap);
+      }
+      block.appendChild(fig);
+    }
+
+    box.appendChild(block);
+    select.appendChild(new Option(s.heading, s.heading));
+  });
+}
+
+function renderRatingChips() {
+  const wrap = $("ratingChips");
+  RATINGS.forEach((label, i) => {
+    const input = document.createElement("input");
+    input.type = "radio";
+    input.name = "rating";
+    input.id = "rating" + (i + 1);
+    input.value = String(i + 1);
+    const lab = document.createElement("label");
+    lab.htmlFor = input.id;
+    lab.textContent = label;
+    wrap.appendChild(input);
+    wrap.appendChild(lab);
+  });
+}
+
+function renderNotes() {
+  const list = $("noteList");
+  const msg = $("notesMsg");
+  list.textContent = "";
+  msg.className = "";
+
+  if (!notes.length) {
+    msg.hidden = false;
+    msg.textContent = "No notes yet. Your teacher’s feedback will show here once it is sent.";
+    return;
+  }
+  msg.hidden = true;
+
+  notes.forEach((n) => {
+    const card = document.createElement("article");
+    card.className = "note";
+
+    const head = document.createElement("div");
+    head.className = "note-head";
+    const who = document.createElement("span");
+    who.className = "note-who";
+    who.textContent = n.teacher || "Teacher";
+    head.appendChild(who);
+
+    const d = new Date(n.time);
+    if (!isNaN(d)) {
+      const when = document.createElement("span");
+      when.className = "note-when";
+      when.textContent = d.toLocaleDateString("en-PH", { year: "numeric", month: "short", day: "numeric" });
+      head.appendChild(when);
+    }
+
+    const meta = document.createElement("span");
+    meta.className = "note-meta";
+    const rLabel = RATINGS[Number(n.rating) - 1];
+    if (rLabel) {
+      const strong = document.createElement("strong");
+      strong.textContent = rLabel;
+      meta.appendChild(strong);
+    }
+    if (n.section) {
+      meta.appendChild(document.createTextNode((rLabel ? " on " : "On ") + n.section));
+    }
+    if (meta.childNodes.length) head.appendChild(meta);
+    card.appendChild(head);
+
+    if (n.insights) card.appendChild(penBlock("Insights", n.insights, false));
+    if (n.corrections) card.appendChild(penBlock("Corrections", n.corrections, true));
+
+    list.appendChild(card);
+  });
+}
+
+function penBlock(label, text, isFix) {
+  const wrap = document.createElement("div");
+  wrap.className = "pen" + (isFix ? " fix" : "");
+  const l = document.createElement("span");
+  l.className = "pen-label";
+  l.textContent = label;
+  const p = document.createElement("p");
+  p.className = "pen-text";
+  p.textContent = text;
+  wrap.appendChild(l);
+  wrap.appendChild(p);
+  return wrap;
+}
+
+function showNotesError(text) {
+  const msg = $("notesMsg");
+  msg.hidden = false;
+  msg.className = "err";
+  msg.textContent = text;
+}
+
+async function loadNotes(quiet) {
+  if (!SCRIPT_URL) { renderNotes(); return; }
+  if (!quiet) {
+    $("notesMsg").hidden = false;
+    $("notesMsg").className = "";
+    $("notesMsg").textContent = "Loading notes…";
+  }
+  try {
+    const url = SCRIPT_URL + (SCRIPT_URL.includes("?") ? "&" : "?") +
+      "work=" + encodeURIComponent(WORK.id) + "&_=" + Date.now();
+    const res = await fetch(url);
+    const data = await res.json();
+    notes = Array.isArray(data.notes) ? data.notes : [];
+    renderNotes();
+  } catch (err) {
+    if (quiet) renderNotes();
+    else showNotesError("Couldn’t load the notes. Check the Apps Script link, and that access is set to Anyone.");
+  }
+}
+
+function say(text, kind) {
+  const s = $("status");
+  s.textContent = text;
+  s.className = kind || "";
+}
+
+$("noteForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const fd = new FormData(e.target);
+  const payload = {
+    workId: WORK.id,
+    teacher: String(fd.get("teacher") || "").trim(),
+    rating: Number(fd.get("rating") || 0),
+    section: String(fd.get("section") || ""),
+    insights: String(fd.get("insights") || "").trim(),
+    corrections: String(fd.get("corrections") || "").trim(),
+    website: String(fd.get("website") || "")
+  };
+
+  if (!payload.teacher) { say("Enter your name.", "err"); $("teacher").focus(); return; }
+  if (!payload.rating) { say("Choose how well this turned out.", "err"); return; }
+  if (!payload.insights && !payload.corrections) {
+    say("Write an insight or a correction.", "err");
+    $("insights").focus();
+    return;
+  }
+
+  const btn = $("sendBtn");
+  btn.disabled = true;
+  say("Sending…");
+
+  const note = {
+    time: new Date().toISOString(),
+    teacher: payload.teacher,
+    rating: payload.rating,
+    section: payload.section,
+    insights: payload.insights,
+    corrections: payload.corrections
+  };
+
+  // Bots fill the hidden field; pretend it worked and drop it.
+  if (payload.website) { say("Notes sent."); btn.disabled = false; return; }
+
+  if (!SCRIPT_URL) {
+    notes.unshift(note);
+    renderNotes();
+    say("Added in preview mode. Not saved anywhere.", "ok");
+    resetForm();
+    btn.disabled = false;
+    return;
+  }
+
+  try {
+    await fetch(SCRIPT_URL, {
+      method: "POST",
+      mode: "no-cors",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify(payload)
+    });
+    notes.unshift(note);
+    renderNotes();
+    say("Notes sent.", "ok");
+    resetForm();
+    loadNotes(true);
+  } catch (err) {
+    say("Couldn’t send. Check the connection and try again.", "err");
+  }
+  btn.disabled = false;
+});
+
+function resetForm() {
+  $("insights").value = "";
+  $("corrections").value = "";
+  $("section").selectedIndex = 0;
+  document.querySelectorAll('input[name="rating"]').forEach((r) => (r.checked = false));
+}
+
+renderWork();
+renderRatingChips();
+$("previewNote").hidden = !!SCRIPT_URL;
+loadNotes(false);
+</script>
+</body>
+</html>
